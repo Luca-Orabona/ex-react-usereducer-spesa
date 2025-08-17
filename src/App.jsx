@@ -12,13 +12,34 @@ function App() {
     { name: 'Pasta', price: 0.7 },
   ];
 
+  const updateProductQuantity = (prodottoCarrello) => {
+    setAddedProducts(curr => {
+      return curr.map(p =>
+        p.name === prodottoCarrello.name
+          ? { ...p, quantity: p.quantity + 1 }
+          : p
+      )
+    })
+  };
+
   const addToCart = (product) => {
     const productToAdd = addedProducts.find(p => p.name === product.name);
     if (!productToAdd) {
       setAddedProducts(curr => [...curr, { ...product, quantity: 1 }])
+    } else {
+      updateProductQuantity(productToAdd)
     }
   };
-  console.log(addedProducts);
+
+  const removeFromCart = (prodotto) => {
+    const newProducts = addedProducts.filter(p => p.name !== prodotto.name);
+    setAddedProducts(newProducts);
+  };
+
+  const totalPrice = () => {
+    return addedProducts.reduce((acc, p) => acc + (p.price * p.quantity), 0)
+  };
+
 
 
   return (
@@ -37,14 +58,22 @@ function App() {
         <ul>
           <li className="text-center"><h1>Carrello</h1></li>
           {addedProducts.map((p, i) => (
-            <li key={i} className="bg-green p-10 mb-10">
-              <div className="flex gp mb-10">
-                <h2>{p.name}: </h2>
-                <span>{p.price.toFixed(2)}€</span>
+            <li key={i} className="flex align-center justify-space-between bg-green p-10 mb-10">
+              <div>
+                <div className="flex gp mb-10">
+                  <h2>{p.name}: </h2>
+                  <span>{p.price.toFixed(2)}€</span>
+                </div>
+                <p>Quantità: {p.quantity}</p>
               </div>
-              <p>Quantità: {p.quantity}</p>
+
+              <button onClick={() => removeFromCart(p)}>Rimuovi</button>
             </li>
           ))}
+          <li className="flex justify-center gp ">
+            <h2>Prezzo totale:</h2>
+            <span style={{fontWeight: 600, fontSize: `1.2rem`}}>{totalPrice().toFixed(2)}€</span>
+          </li>
         </ul>}
     </>
   )
