@@ -12,11 +12,14 @@ function App() {
     { name: 'Pasta', price: 0.7 },
   ];
 
-  const updateProductQuantity = (prodottoCarrello) => {
+  const updateProductQuantity = (prodottoCarrello, quantity) => {
+    if(quantity < 1) {
+      return
+    }
     setAddedProducts(curr => {
       return curr.map(p =>
         p.name === prodottoCarrello.name
-          ? { ...p, quantity: p.quantity + 1 }
+          ? { ...p, quantity}
           : p
       )
     })
@@ -26,15 +29,18 @@ function App() {
     const productToAdd = addedProducts.find(p => p.name === product.name);
     if (!productToAdd) {
       setAddedProducts(curr => [...curr, { ...product, quantity: 1 }])
-    } else {
-      updateProductQuantity(productToAdd)
-    }
+    } 
+    // else {
+    //   updateProductQuantity(productToAdd)
+    // }
   };
 
   const removeFromCart = (prodotto) => {
-    const newProducts = addedProducts.filter(p => p.name !== prodotto.name);
-    setAddedProducts(newProducts);
-  };
+
+    setAddedProducts(curr => {
+      return curr.filter(p => p.name !== prodotto.name);
+    })
+  }
 
   const totalPrice = () => {
     return addedProducts.reduce((acc, p) => acc + (p.price * p.quantity), 0)
@@ -64,7 +70,7 @@ function App() {
                   <h2>{p.name}: </h2>
                   <span>{p.price.toFixed(2)}€</span>
                 </div>
-                <p>Quantità: {p.quantity}</p>
+                <p>Quantità: <input className="quantity" type="number" value={p.quantity} onChange={e => updateProductQuantity(p, Number(parseInt(e.target.value)))}/></p>
               </div>
 
               <button onClick={() => removeFromCart(p)}>Rimuovi</button>
@@ -72,7 +78,7 @@ function App() {
           ))}
           <li className="flex justify-center gp ">
             <h2>Prezzo totale:</h2>
-            <span style={{fontWeight: 600, fontSize: `1.2rem`}}>{totalPrice().toFixed(2)}€</span>
+            <span style={{ fontWeight: 600, fontSize: `1.2rem` }}>{totalPrice().toFixed(2)}€</span>
           </li>
         </ul>}
     </>

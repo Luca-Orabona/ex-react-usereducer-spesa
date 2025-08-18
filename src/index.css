@@ -58,7 +58,14 @@ body {
   background-color: rgb(20, 203, 90);
   border-radius: 12px;
 }
-  
+
+/* carello */
+.quantity {
+  width: 15%;
+  border-radius: 5px;
+  border: none;
+  text-align: center;
+}  
 
 
 
